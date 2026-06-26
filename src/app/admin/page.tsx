@@ -23,12 +23,12 @@ export default async function AdminDashboard() {
     take: 5,
   })
 
-  const studentIds = topStudents.map(t => t.studentId)
+  const studentIds = topStudents.map((t: any) => t.studentId as string)
   const users = await prisma.user.findMany({
     where: { id: { in: studentIds } },
   })
 
-  const leaderboard = topStudents.map(t => {
+  const leaderboard = topStudents.map((t: any) => {
     const user = users.find(u => u.id === t.studentId)
     return {
       id: user?.id || t.studentId,
