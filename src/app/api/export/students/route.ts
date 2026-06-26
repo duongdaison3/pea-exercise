@@ -37,7 +37,7 @@ export async function GET(request: Request) {
           where: { classId, class: { teacherId: user.id } },
           include: { student: { include: { enrollments: { include: { class: true } } } } }
         });
-        students = enrollments.map(e => e.student);
+        students = enrollments.map((e: any) => e.student);
       } else {
         // All students created by this teacher
         students = await prisma.user.findMany({
@@ -54,7 +54,7 @@ export async function GET(request: Request) {
 
     // Prepare CSV data
     const headers = ['Mã ID', 'Họ và tên', 'Email', 'Số điện thoại', 'Ngày đăng ký', 'Trạng thái', 'Các lớp đang học'];
-    const rows = students.map(s => {
+    const rows = students.map((s: any) => {
       const classNames = s.enrollments.map((e: any) => e.class.name).join('; ');
       const dateStr = s.createdAt ? new Date(s.createdAt).toLocaleDateString('vi-VN') : '';
       

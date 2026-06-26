@@ -77,7 +77,7 @@ export function CreateClassDialog({ teachers }: { teachers: any[] }) {
                   <SelectValue placeholder="Chọn giáo viên..." />
                 </SelectTrigger>
                 <SelectContent>
-                  {teachers.map(t => (
+                  {teachers.map((t: any) => (
                     <SelectItem key={t.id} value={t.id}>{t.name} ({t.email})</SelectItem>
                   ))}
                 </SelectContent>

@@ -34,7 +34,7 @@ export default async function TeacherReportsPage() {
   })
 
   // Format data for client
-  const attempts: ReportAttempt[] = attemptsData.map(a => ({
+  const attempts: ReportAttempt[] = attemptsData.map((a: any) => ({
     id: a.id,
     studentId: a.student.id,
     studentName: a.student.name,
@@ -48,7 +48,7 @@ export default async function TeacherReportsPage() {
 
   // Extract unique classes for filter dropdown
   const classesMap = new Map()
-  attemptsData.forEach(a => {
+  attemptsData.forEach((a: any) => {
     if (!classesMap.has(a.module.class.id)) {
       classesMap.set(a.module.class.id, {
         id: a.module.class.id,

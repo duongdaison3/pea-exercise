@@ -65,7 +65,7 @@ export function StudentsTab({ classId, enrollments, availableStudents }: {
                   <SelectTrigger>
                     <span data-slot="select-value" className={`line-clamp-1 flex items-center ${!selectedStudent ? 'text-muted-foreground' : ''}`}>
                       {selectedStudent && selectedStudent !== 'none' 
-                        ? availableStudents.find(s => s.id === selectedStudent)?.name 
+                        ? availableStudents.find((s: any) => s.id === selectedStudent)?.name 
                         : "-- Chọn một học viên --"}
                     </span>
                   </SelectTrigger>
@@ -73,7 +73,7 @@ export function StudentsTab({ classId, enrollments, availableStudents }: {
                     {availableStudents.length === 0 ? (
                       <SelectItem value="none" disabled>Không có học viên nào khả dụng</SelectItem>
                     ) : (
-                      availableStudents.map(s => (
+                      availableStudents.map((s: any) => (
                         <SelectItem key={s.id} value={s.id}>{s.name} ({s.email})</SelectItem>
                       ))
                     )}

@@ -16,7 +16,7 @@ export default async function TeacherPage() {
     where: { class: { teacherId } },
     select: { studentId: true }
   })
-  const totalStudents = new Set(enrollments.map(e => e.studentId)).size
+  const totalStudents = new Set(enrollments.map((e: any) => e.studentId)).size
 
   // 2. Total Classes
   const totalClasses = await prisma.class.count({
@@ -39,9 +39,9 @@ export default async function TeacherPage() {
     }
   })
 
-  const classesProgress = classesData.map(c => {
+  const classesProgress = classesData.map((c: any) => {
     const totalModules = c.modules.length
-    const publishedModules = c.modules.filter(m => m.isPublished).length
+    const publishedModules = c.modules.filter((m: any) => m.isPublished).length
     return {
       id: c.id,
       name: c.name,
@@ -66,7 +66,7 @@ export default async function TeacherPage() {
     take: 10
   })
 
-  const recentSubmissions = recentSubmissionsData.map(ts => ({
+  const recentSubmissions = recentSubmissionsData.map((ts: any) => ({
     id: ts.id,
     studentName: ts.student.name,
     studentEmail: ts.student.email,

@@ -254,7 +254,7 @@ export function ModuleForm({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {classes.map(c => (
+                    {classes.map((c: any) => (
                       <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                     ))}
                   </SelectContent>

@@ -33,9 +33,9 @@ export default async function TakeModulePage(props: { params: Promise<{ moduleId
   // Thực tế kiến trúc hiện tại luôn tạo section (mặc định là Phần 1).
   
   // Sanitize questions: strip correctAnswer
-  const sanitizedSections = moduleData.sections.map(section => ({
+  const sanitizedSections = moduleData.sections.map((section: any) => ({
     ...section,
-    questions: section.questions.map(q => {
+    questions: section.questions.map((q: any) => {
       let contentObj = {}
       try {
         contentObj = JSON.parse(q.content)

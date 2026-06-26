@@ -117,7 +117,7 @@ export function ReportsClient({ attempts, classes, title, description }: Reports
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ALL">Tất cả lớp</SelectItem>
-                  {classes.map(c => (
+                  {classes.map((c: any) => (
                     <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                   ))}
                 </SelectContent>
