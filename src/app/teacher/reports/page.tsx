@@ -42,7 +42,7 @@ export default async function TeacherReportsPage() {
     classId: a.module.class.id,
     moduleTitle: a.module.title,
     totalScore: a.totalScore ?? 0,
-    isPassed: a.isPassed,
+    isPassed: a.isPassed ?? false,
     endTime: a.endTime?.toISOString() || new Date().toISOString()
   }))
 
