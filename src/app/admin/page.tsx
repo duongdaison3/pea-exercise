@@ -29,7 +29,7 @@ export default async function AdminDashboard() {
   })
 
   const leaderboard = topStudents.map((t: any) => {
-    const user = users.find(u => u.id === t.studentId)
+    const user = users.find((u: any) => u.id === t.studentId)
     return {
       id: user?.id || t.studentId,
       name: user?.name || 'Unknown',
