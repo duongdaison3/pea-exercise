@@ -1,0 +1,134 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String          @id @default(cuid())
+  name           String
+  email          String          @unique
+  password       String
+  role           String          // ADMIN, TEACHER, STUDENT
+  phone          String?
+  status         String          @default("ACTIVE") // ACTIVE, INACTIVE, SUSPENDED, DROPPED
+  createdAt      DateTime        @default(now())
+  
+  // Quan hệ: Giáo viên tạo Học viên
+  createdById    String?
+  createdBy      User?           @relation("UserCreatedBy", fields: [createdById], references: [id])
+  createdUsers   User[]          @relation("UserCreatedBy")
+
+  teachingClasses Class[]        @relation("ClassTeacher")
+  enrollments    Enrollment[]
+  studentAnswers StudentAnswer[]
+  testAttempts   TestAttempt[]
+}
+
+model Class {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  
+  teacherId   String
+  teacher     User     @relation("ClassTeacher", fields: [teacherId], references: [id])
+  
+  startDate   DateTime?
+  endDate     DateTime?
+  maxStudents Int?
+  status      String   @default("ACTIVE") // ACTIVE, COMPLETED, CANCELLED
+
+  modules     Module[]
+  enrollments Enrollment[]
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  studentId String
+  student   User     @relation(fields: [studentId], references: [id])
+  classId   String
+  class     Class    @relation(fields: [classId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([studentId, classId])
+}
+
+model Module {
+  id           String     @id @default(cuid())
+  classId      String
+  class        Class      @relation(fields: [classId], references: [id])
+  title        String
+  description  String?
+  timeLimit    Int        @default(0) // seconds
+  passingScore Float      @default(0)
+  totalScore   Float      @default(100)
+  scoringMode  String     @default("TOTAL_DIVIDED") // "TOTAL_DIVIDED" or "PER_QUESTION"
+  deadline     DateTime?
+  isPublished  Boolean    @default(false)
+  orderIndex   Int        @default(0)
+  sections     Section[]
+  questions    Question[]
+  testAttempts TestAttempt[]
+}
+
+model Section {
+  id         String     @id @default(cuid())
+  moduleId   String
+  module     Module     @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  title      String
+  timeLimit  Int        @default(0) // minutes
+  orderIndex Int        @default(0)
+  questions  Question[]
+}
+
+model Question {
+  id             String          @id @default(cuid())
+  moduleId       String
+  module         Module          @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  sectionId      String?
+  section        Section?        @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  type           String          // 'SPEAKING', 'WRITING', 'READING', 'LISTENING'
+  instruction    String
+  content        String          // JSON string
+  score          Float?
+  studentAnswers StudentAnswer[]
+}
+
+model StudentAnswer {
+  id              String   @id @default(cuid())
+  questionId      String
+  question        Question @relation(fields: [questionId], references: [id])
+  studentId       String
+  student         User     @relation(fields: [studentId], references: [id])
+  audioUrl        String?
+  textResponse    String?
+  aiScore         Float?
+  aiFeedback      String?
+  teacherScore    Float?
+  teacherFeedback String?
+  finalScore      Float?
+  status          String   // SUBMITTED, AI_GRADED, PENDING_TEACHER_REVIEW, COMPLETED
+  createdAt       DateTime @default(now())
+  
+  testAttemptId   String?
+  testAttempt     TestAttempt? @relation(fields: [testAttemptId], references: [id], onDelete: Cascade)
+}
+
+model TestAttempt {
+  id          String   @id @default(cuid())
+  studentId   String
+  student     User     @relation(fields: [studentId], references: [id])
+  moduleId    String
+  module      Module   @relation(fields: [moduleId], references: [id])
+  
+  startTime   DateTime @default(now())
+  endTime     DateTime?
+  status      String   @default("IN_PROGRESS") // IN_PROGRESS, COMPLETED
+  totalScore  Float?
+  isPassed    Boolean?
+  
+  studentAnswers StudentAnswer[]
+}
