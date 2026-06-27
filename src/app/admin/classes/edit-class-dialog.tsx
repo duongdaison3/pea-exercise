@@ -27,7 +27,7 @@ export function EditClassDialog({ classData, teachers }: { classData: any, teach
     e.preventDefault()
     setIsLoading(true)
     const formData = new FormData(e.currentTarget)
-    
+
     const data = {
       name: formData.get('name') as string,
       description: formData.get('description') as string,
@@ -52,7 +52,7 @@ export function EditClassDialog({ classData, teachers }: { classData: any, teach
     if (!confirm('Bạn có chắc chắn muốn xóa lớp học này? Hành động này không thể hoàn tác và sẽ thất bại nếu lớp học đang có dữ liệu.')) {
       return
     }
-    
+
     setIsDeleting(true)
     const res = await deleteClass(classData.id)
     setIsDeleting(false)
@@ -69,11 +69,13 @@ export function EditClassDialog({ classData, teachers }: { classData: any, teach
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="w-full mt-2 text-slate-600 hover:text-slate-900">
-          <Edit className="w-4 h-4 mr-2" /> Chỉnh sửa
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button variant="outline" size="sm" className="w-full mt-2 text-slate-600 hover:text-slate-900">
+            <Edit className="w-4 h-4 mr-2" /> Chỉnh sửa
+          </Button>
+        }
+      />
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Chỉnh sửa lớp học</DialogTitle>
@@ -87,7 +89,7 @@ export function EditClassDialog({ classData, teachers }: { classData: any, teach
               <Label htmlFor="name">Tên lớp học <span className="text-red-500">*</span></Label>
               <Input id="name" name="name" required defaultValue={classData.name} placeholder="VD: Lớp luyện thi IELTS K1" />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="teacherId">Giáo viên phụ trách <span className="text-red-500">*</span></Label>
               <Select name="teacherId" required defaultValue={classData.teacherId}>
@@ -152,9 +154,9 @@ export function EditClassDialog({ classData, teachers }: { classData: any, teach
             </div>
           </div>
           <DialogFooter className="flex justify-between items-center w-full">
-            <Button 
-              type="button" 
-              variant="destructive" 
+            <Button
+              type="button"
+              variant="destructive"
               onClick={handleDelete}
               disabled={isDeleting || isLoading}
             >
