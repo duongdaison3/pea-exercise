@@ -71,12 +71,15 @@ function MultipleChoiceSingle({ content, value, onChange }: any) {
     <div className="space-y-6">
       {content.text && <div className="text-lg leading-relaxed text-slate-800 bg-slate-50 p-6 rounded-xl border mb-6">{content.text}</div>}
       <RadioGroup value={value || ''} onValueChange={onChange} className="space-y-3">
-        {content.options?.map((opt: string, idx: number) => (
-          <div key={idx} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-slate-50 transition-colors">
-            <RadioGroupItem value={opt} id={`radio-${idx}`} />
-            <Label htmlFor={`radio-${idx}`} className="flex-1 cursor-pointer text-base font-normal leading-relaxed">{opt}</Label>
-          </div>
-        ))}
+        {content.options?.map((opt: any, idx: number) => {
+          const optValue = typeof opt === 'object' ? opt.value : opt;
+          return (
+            <div key={idx} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-slate-50 transition-colors">
+              <RadioGroupItem value={optValue} id={`radio-${idx}`} />
+              <Label htmlFor={`radio-${idx}`} className="flex-1 cursor-pointer text-base font-normal leading-relaxed">{optValue}</Label>
+            </div>
+          )
+        })}
       </RadioGroup>
     </div>
   )
@@ -92,16 +95,19 @@ function MultipleChoiceMultiple({ content, value, onChange }: any) {
     <div className="space-y-6">
       {content.text && <div className="text-lg leading-relaxed text-slate-800 bg-slate-50 p-6 rounded-xl border mb-6">{content.text}</div>}
       <div className="space-y-3">
-        {content.options?.map((opt: string, idx: number) => (
-          <div key={idx} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-slate-50 transition-colors">
-            <Checkbox 
-              id={`chk-${idx}`} 
-              checked={selected.includes(opt)}
-              onCheckedChange={() => toggle(opt)}
-            />
-            <Label htmlFor={`chk-${idx}`} className="flex-1 cursor-pointer text-base font-normal leading-relaxed">{opt}</Label>
-          </div>
-        ))}
+        {content.options?.map((opt: any, idx: number) => {
+          const optValue = typeof opt === 'object' ? opt.value : opt;
+          return (
+            <div key={idx} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-slate-50 transition-colors">
+              <Checkbox 
+                id={`chk-${idx}`} 
+                checked={selected.includes(optValue)}
+                onCheckedChange={() => toggle(optValue)}
+              />
+              <Label htmlFor={`chk-${idx}`} className="flex-1 cursor-pointer text-base font-normal leading-relaxed">{optValue}</Label>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
@@ -190,13 +196,20 @@ function FIBDropdown({ content, value, onChange }: any) {
     onChange({ ...answers, [blankId]: val })
   }
 
+  // Extract shared options for all blanks from content.options
+  const sharedOptions = content.options?.map((o: any) => typeof o === 'object' ? o.value : o) || []
+
   return (
     <div className="text-lg leading-loose text-slate-800 bg-white p-6 rounded-xl border">
       {parts.map((part: string, idx: number) => {
         const match = part.match(/\[(BLANK_\d+)\]/)
         if (match) {
           const blankId = match[1]
-          const options = content.options[blankId] || []
+          // Use specific options if available, else fallback to shared options (word bank)
+          const options = content.options && !Array.isArray(content.options) && content.options[blankId] 
+            ? content.options[blankId] 
+            : sharedOptions;
+            
           return (
             <select 
               key={idx} 
@@ -227,7 +240,10 @@ function FIBDragDrop({ content, value, onChange }: any) {
   
   const parts = content.text.split(/(\[BLANK_\d+\])/g)
   const answers = value || {} // { BLANK_0: "word" }
-  const wordBank = content.words || [] // List of words to drag
+  
+  // Extract wordBank from either content.words or content.options
+  const wordBank = content.words || (content.options?.map((o: any) => typeof o === 'object' ? o.value : o)) || []
+
 
   // Words still available in bank
   const usedWords = Object.values(answers)
