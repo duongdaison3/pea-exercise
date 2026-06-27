@@ -113,7 +113,13 @@ export function ReportsClient({ attempts, classes, title, description }: Reports
               <Label className="text-slate-500">Lớp học</Label>
               <Select value={classFilter} onValueChange={(val) => setClassFilter(val || 'ALL')}>
                 <SelectTrigger className="bg-white">
-                  <SelectValue placeholder="Tất cả lớp" />
+                  <SelectValue placeholder="Tất cả lớp">
+                    {(val: any) => {
+                      if (!val || val === 'ALL') return "Tất cả lớp"
+                      const selected = classes.find((c: any) => c.id === val)
+                      return selected ? selected.name : "Tất cả lớp"
+                    }}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ALL">Tất cả lớp</SelectItem>
@@ -128,7 +134,13 @@ export function ReportsClient({ attempts, classes, title, description }: Reports
               <Label className="text-slate-500">Trạng thái</Label>
               <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val || 'ALL')}>
                 <SelectTrigger className="bg-white">
-                  <SelectValue placeholder="Tất cả trạng thái" />
+                  <SelectValue placeholder="Tất cả trạng thái">
+                    {(val: any) => {
+                      if (val === 'PASSED') return "Đạt"
+                      if (val === 'FAILED') return "Không đạt"
+                      return "Tất cả trạng thái"
+                    }}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ALL">Tất cả</SelectItem>

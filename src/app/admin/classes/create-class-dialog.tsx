@@ -74,7 +74,13 @@ export function CreateClassDialog({ teachers }: { teachers: any[] }) {
               <Label htmlFor="teacherId">Giáo viên phụ trách <span className="text-red-500">*</span></Label>
               <Select name="teacherId" required>
                 <SelectTrigger>
-                  <SelectValue placeholder="Chọn giáo viên..." />
+                  <SelectValue placeholder="Chọn giáo viên...">
+                    {(val: any) => {
+                      if (!val || val === '') return "Chọn giáo viên..."
+                      const selected = teachers.find((t: any) => t.id === val)
+                      return selected ? `${selected.name} (${selected.email})` : "Chọn giáo viên..."
+                    }}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {teachers.map((t: any) => (
@@ -109,7 +115,14 @@ export function CreateClassDialog({ teachers }: { teachers: any[] }) {
                 <Label htmlFor="status">Trạng thái lớp</Label>
                 <Select name="status" defaultValue="ACTIVE">
                   <SelectTrigger>
-                    <SelectValue placeholder="Chọn trạng thái" />
+                    <SelectValue placeholder="Chọn trạng thái">
+                      {(val: any) => {
+                        if (val === "ACTIVE") return "Đang học (Active)"
+                        if (val === "COMPLETED") return "Đã hoàn thành"
+                        if (val === "CANCELLED") return "Đã hủy"
+                        return "Chọn trạng thái"
+                      }}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="ACTIVE">Đang học (Active)</SelectItem>

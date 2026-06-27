@@ -94,7 +94,14 @@ export function CreateClassDialog() {
                 <Label htmlFor="status">Trạng thái lớp</Label>
                 <Select name="status" defaultValue="ACTIVE">
                   <SelectTrigger>
-                    <SelectValue placeholder="Chọn trạng thái" />
+                    <SelectValue placeholder="Chọn trạng thái">
+                      {(val: any) => {
+                        if (val === "ACTIVE") return "Đang học (Active)"
+                        if (val === "COMPLETED") return "Đã hoàn thành"
+                        if (val === "CANCELLED") return "Đã hủy"
+                        return "Chọn trạng thái"
+                      }}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="ACTIVE">Đang học (Active)</SelectItem>
