@@ -71,7 +71,7 @@ function MultipleChoiceSingle({ content, value, onChange }: any) {
     <div className="space-y-6">
       {content.text && <div className="text-lg leading-relaxed text-slate-800 bg-slate-50 p-6 rounded-xl border mb-6">{content.text}</div>}
       <RadioGroup value={value || ''} onValueChange={onChange} className="space-y-3">
-        {content.options?.map((opt: any, idx: number) => {
+        {Array.isArray(content.options) && content.options.map((opt: any, idx: number) => {
           const optValue = typeof opt === 'object' ? opt.value : opt;
           return (
             <div key={idx} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-slate-50 transition-colors">
@@ -95,7 +95,7 @@ function MultipleChoiceMultiple({ content, value, onChange }: any) {
     <div className="space-y-6">
       {content.text && <div className="text-lg leading-relaxed text-slate-800 bg-slate-50 p-6 rounded-xl border mb-6">{content.text}</div>}
       <div className="space-y-3">
-        {content.options?.map((opt: any, idx: number) => {
+        {Array.isArray(content.options) && content.options.map((opt: any, idx: number) => {
           const optValue = typeof opt === 'object' ? opt.value : opt;
           return (
             <div key={idx} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-slate-50 transition-colors">
@@ -197,7 +197,7 @@ function FIBDropdown({ content, value, onChange }: any) {
   }
 
   // Extract shared options for all blanks from content.options
-  const sharedOptions = content.options?.map((o: any) => typeof o === 'object' ? o.value : o) || []
+  const sharedOptions = Array.isArray(content.options) ? content.options.map((o: any) => typeof o === 'object' ? o.value : o) : []
 
   return (
     <div className="text-lg leading-loose text-slate-800 bg-white p-6 rounded-xl border">
@@ -242,7 +242,7 @@ function FIBDragDrop({ content, value, onChange }: any) {
   const answers = value || {} // { BLANK_0: "word" }
   
   // Extract wordBank from either content.words or content.options
-  const wordBank = content.words || (content.options?.map((o: any) => typeof o === 'object' ? o.value : o)) || []
+  const wordBank = content.words || (Array.isArray(content.options) ? content.options.map((o: any) => typeof o === 'object' ? o.value : o) : []) || []
 
 
   // Words still available in bank

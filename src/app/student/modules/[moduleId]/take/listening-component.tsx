@@ -108,7 +108,7 @@ function MultipleChoice({ content, value, onChange }: any) {
     <div className="space-y-6">
       {content.text && <div className="text-lg leading-relaxed text-slate-800 bg-slate-50 p-6 rounded-xl border mb-6">{content.text}</div>}
       <RadioGroup value={value || ''} onValueChange={onChange} className="space-y-3">
-        {content.options?.map((opt: any, idx: number) => {
+        {Array.isArray(content.options) && content.options.map((opt: any, idx: number) => {
           const optValue = typeof opt === 'object' ? opt.value : opt;
           return (
             <div key={idx} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-slate-50 transition-colors">
