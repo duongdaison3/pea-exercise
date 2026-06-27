@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { notFound } from 'next/navigation'
@@ -14,7 +15,14 @@ export default async function ClassDetailsPage({ params }: { params: Promise<{ i
   const cookie = (await cookies()).get('session')?.value
   const session = await decrypt(cookie) as { userId: string } | null
   
-  const classInfo = await prisma.class.findUnique({
+  const classInfo: Prisma.ClassGetPayload<{
+    include: {
+      enrollments: {
+        include: { student: true }
+      }
+      modules: true
+    }
+  }> | null = await prisma.class.findUnique({
     where: { id, teacherId: session?.userId },
     include: {
       enrollments: {

@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client'
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +22,11 @@ export default async function StudentClassDetailsPage({ params }: { params: Prom
   })
   if (!enrollment) notFound()
 
-  const classInfo = await prisma.class.findUnique({
+  const classInfo: Prisma.ClassGetPayload<{
+    include: {
+      modules: true
+    }
+  }> | null = await prisma.class.findUnique({
     where: { id },
     include: {
       modules: {
