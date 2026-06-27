@@ -127,7 +127,7 @@ export function GradingDataTable({ data }: { data: GradingRow[] }) {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {filteredData.length > 0 ? (
-                filteredData.map((row) => {
+                filteredData.map((row: any) => {
                   const typeInfo = getQuestionTypeInfo(row.questionType)
                   return (
                     <tr key={row.id} className="hover:bg-slate-50/50 transition-colors group">

@@ -156,7 +156,7 @@ export default async function StudentResultsPage({ params }: { params: Promise<{
         </div>
 
         <div className="space-y-6">
-          {detailedResults.map((res) => {
+          {detailedResults.map((res: any) => {
             const isCompleted = res.status === 'COMPLETED'
             
             return (

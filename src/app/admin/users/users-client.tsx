@@ -213,7 +213,7 @@ export function AdminUsersClient({ initialUsers }: { initialUsers: any[] }) {
                     Không tìm thấy tài khoản nào phù hợp.
                   </TableCell>
                 </TableRow>
-              ) : filteredUsers.map((user, idx) => (
+              ) : filteredUsers.map((user: any, idx: number) => (
                 <TableRow key={user.id} className={idx % 2 === 0 ? "bg-white" : "bg-slate-50/50"}>
                   <TableCell>
                     <div className="flex flex-col">

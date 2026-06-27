@@ -127,7 +127,7 @@ export function ClassModulesList({ classId, modules }: { classId: string, module
       {/* Cards Grid */}
       {sortedModules.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sortedModules.map((mod) => {
+          {sortedModules.map((mod: any) => {
             const isDeadlinePassed = mod.deadline ? isPast(new Date(mod.deadline)) : false
             const progressPct = mod.totalStudents > 0
               ? Math.round((mod.submittedStudents / mod.totalStudents) * 100)

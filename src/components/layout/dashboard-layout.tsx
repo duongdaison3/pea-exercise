@@ -55,7 +55,7 @@ const SidebarContent = ({
     </div>
     
     <nav className="flex-1 px-3 py-6 space-y-2 overflow-y-auto scrollbar-hide">
-      {sidebarLinks.map((link) => {
+      {sidebarLinks.map((link: any) => {
         const isActive = pathname === link.href || 
           (link.href !== '/admin' && link.href !== '/teacher' && link.href !== '/student' && pathname.startsWith(link.href))
           

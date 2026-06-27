@@ -104,7 +104,7 @@ export function StudentsTab({ classId, enrollments, availableStudents }: {
               <TableRow>
                 <TableCell colSpan={3} className="text-center h-24 text-slate-500">Chưa có học viên nào trong lớp.</TableCell>
               </TableRow>
-            ) : enrollments.map((e) => (
+            ) : enrollments.map((e: any) => (
               <TableRow key={e.id}>
                 <TableCell className="font-medium">{e.student.name}</TableCell>
                 <TableCell>{e.student.email}</TableCell>

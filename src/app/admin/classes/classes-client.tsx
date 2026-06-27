@@ -45,7 +45,7 @@ export function ClassesClient({ initialClasses, teachers }: { initialClasses: an
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredClasses.map((c) => (
+          {filteredClasses.map((c: any) => (
             <Card key={c.id} className="flex flex-col shadow-sm hover:shadow-md transition-shadow">
               <CardHeader className="bg-slate-50/50 border-b pb-4 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4">

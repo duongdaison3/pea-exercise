@@ -126,7 +126,7 @@ export function DashboardClient({ stats, leaderboard }: DashboardProps) {
                     dataKey="value"
                     stroke="none"
                   >
-                    {pieData.map((entry, index) => (
+                    {pieData.map((entry: any, index: number) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
@@ -194,7 +194,7 @@ export function DashboardClient({ stats, leaderboard }: DashboardProps) {
             </div>
           ) : (
             <div className="space-y-4">
-              {leaderboard.map((student, index) => (
+              {leaderboard.map((student: any, index: number) => (
                 <div key={student.id} className="flex items-center justify-between p-4 rounded-lg border border-slate-100 bg-white shadow-sm hover:shadow transition-shadow">
                   <div className="flex items-center gap-4">
                     <div className="w-6 text-center font-bold text-slate-400">

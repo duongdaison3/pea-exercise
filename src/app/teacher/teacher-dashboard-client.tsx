@@ -104,7 +104,7 @@ export function TeacherDashboardClient({
             </Card>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
-              {classesProgress.map((cls) => {
+              {classesProgress.map((cls: any) => {
                 const progressVal = cls.totalModules > 0 
                   ? Math.round((cls.publishedModules / cls.totalModules) * 100) 
                   : 0
@@ -143,7 +143,7 @@ export function TeacherDashboardClient({
                 </div>
               ) : (
                 <div className="divide-y divide-slate-100 max-h-[400px] overflow-y-auto">
-                  {recentSubmissions.map((sub) => (
+                  {recentSubmissions.map((sub: any) => (
                     <div key={sub.id} className="p-4 flex gap-4 hover:bg-slate-50 transition-colors">
                       <Avatar className="h-10 w-10 border border-slate-200 shrink-0">
                         <AvatarFallback className="bg-blue-50 text-blue-700 font-semibold text-sm">

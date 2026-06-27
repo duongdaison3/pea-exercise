@@ -52,7 +52,7 @@ export default async function StudentScoresPage() {
                   Bạn chưa có kết quả bài làm nào.
                 </TableCell>
               </TableRow>
-            ) : answers.map((ans) => {
+            ) : answers.map((ans: any) => {
               const statusMap: Record<string, { label: string, color: string }> = {
                 SUBMITTED: { label: 'Đã nộp', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200' },
                 AI_GRADED: { label: 'AI đã chấm', color: 'bg-purple-100 text-purple-700 hover:bg-purple-200' },

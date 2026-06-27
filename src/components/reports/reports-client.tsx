@@ -161,7 +161,7 @@ export function ReportsClient({ attempts, classes, title, description }: Reports
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredAttempts.map((a) => (
+                  filteredAttempts.map((a: any) => (
                     <TableRow key={a.id} className="hover:bg-slate-50">
                       <TableCell className="font-medium text-slate-600">{a.studentId.substring(0, 8)}</TableCell>
                       <TableCell className="font-semibold text-slate-900">{a.studentName}</TableCell>

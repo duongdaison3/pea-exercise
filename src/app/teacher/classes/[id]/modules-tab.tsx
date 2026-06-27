@@ -74,7 +74,7 @@ export function ModulesTab({ classId, modules }: { classId: string, modules: { i
               <TableRow>
                 <TableCell colSpan={3} className="text-center h-24 text-slate-500">Chưa có Module nào trong lớp.</TableCell>
               </TableRow>
-            ) : modules.map((m) => (
+            ) : modules.map((m: any) => (
               <TableRow key={m.id}>
                 <TableCell className="font-medium text-slate-500">#{m.orderIndex}</TableCell>
                 <TableCell className="font-medium">{m.title}</TableCell>

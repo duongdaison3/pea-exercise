@@ -39,7 +39,7 @@ export default async function TeacherClassesPage() {
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {classes.map((c) => (
+          {classes.map((c: any) => (
             <Card key={c.id} className="flex flex-col shadow-sm hover:shadow-md transition-shadow">
               <CardHeader className="bg-slate-50/50 border-b pb-4">
                 <div className="flex items-start gap-3">
