@@ -107,7 +107,7 @@ export function QuestionCard({ sectionIndex, questionIndex, remove, move, form, 
               </span>
             </SelectTrigger>
             <SelectContent>
-              {Array.from({ length: sectionsCount }).map((_, i) => (
+              {Array.from({ length: sectionsCount }).map((_: any, i: number) => (
                 <SelectItem key={i} value={i.toString()}>Phần {i + 1}</SelectItem>
               ))}
             </SelectContent>
@@ -330,7 +330,7 @@ export function QuestionCard({ sectionIndex, questionIndex, remove, move, form, 
         {showOptions && (
           <div className="space-y-4 border border-slate-200 p-5 rounded-lg bg-white">
             <Label className="text-slate-700 font-semibold block mb-2">Các lựa chọn đáp án</Label>
-            {options.map((option, optIndex) => (
+            {options.map((option: any, optIndex: number) => (
               <div key={option.id} className="flex items-center space-x-3">
                 <FormField
                   control={form.control}
@@ -518,7 +518,7 @@ function ReorderParagraphsBuilder({ questionPath, form }: { questionPath: string
       </div>
       
       <div className="space-y-3">
-        {fields.map((field, pIdx) => (
+        {fields.map((field: any, pIdx: number) => (
           <div key={field.id} className="flex gap-3 items-start bg-white p-3 rounded-lg border border-slate-200">
             <div className="flex flex-col gap-1 mt-1">
               <Button type="button" variant="ghost" size="icon" disabled={pIdx === 0} onClick={() => move(pIdx, pIdx - 1)} className="h-6 w-6">

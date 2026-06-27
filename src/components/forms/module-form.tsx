@@ -417,7 +417,7 @@ export function ModuleForm({
           </div>
           
           <div className="space-y-6">
-            {sections.map((field, index) => (
+            {sections.map((field: any, index: number) => (
               <SectionBuilder 
                 key={field.id} 
                 sectionIndex={index} 
@@ -529,7 +529,7 @@ function SectionBuilder({ form, sectionIndex, removeSection, moveSection, isFirs
           </Button>
         </div>
 
-        {questions.map((field, index) => (
+        {questions.map((field: any, index: number) => (
           <QuestionCard 
             key={field.id} 
             sectionIndex={sectionIndex}

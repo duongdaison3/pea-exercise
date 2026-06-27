@@ -57,7 +57,7 @@ export default async function StudentResultsPage({ params }: { params: Promise<{
   let totalAchievedScore = 0
   let totalMaxScore = 0
 
-  const detailedResults = answers.map((ans, index) => {
+  const detailedResults = answers.map((ans: any, index: number) => {
     const maxScore = ans.question.score || 0
     totalMaxScore += maxScore
     
