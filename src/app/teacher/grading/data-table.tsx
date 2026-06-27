@@ -35,12 +35,12 @@ export function GradingDataTable({ data }: { data: GradingRow[] }) {
   const [activeTab, setActiveTab] = useState('pending')
 
   const uniqueTypes = useMemo(() => {
-    const types = new Set(data.map(d => d.questionType))
+    const types = new Set(data.map((d: any) => d.questionType))
     return Array.from(types)
   }, [data])
 
   const filteredData = useMemo(() => {
-    return data.filter(row => {
+    return data.filter((row: any) => {
       const matchModule = row.moduleTitle.toLowerCase().includes(searchModule.toLowerCase())
       const matchType = typeFilter === 'ALL' || row.questionType === typeFilter
       const matchTab = activeTab === 'pending' 
@@ -86,7 +86,7 @@ export function GradingDataTable({ data }: { data: GradingRow[] }) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="ALL">Tất cả kỹ năng</SelectItem>
-              {uniqueTypes.map(t => (
+              {uniqueTypes.map((t: any) => (
                 <SelectItem key={t} value={t}>{t.replace(/_/g, ' ')}</SelectItem>
               ))}
             </SelectContent>

@@ -43,7 +43,7 @@ export function StudentsClient({ initialStudents, classes }: { initialStudents: 
   }
 
   // Filtering
-  const filteredStudents = initialStudents.filter(student => {
+  const filteredStudents = initialStudents.filter((student: any) => {
     const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           (student.phone && student.phone.includes(searchTerm));
@@ -125,7 +125,7 @@ export function StudentsClient({ initialStudents, classes }: { initialStudents: 
             </div>
             <div>
               <p className="text-sm font-medium text-slate-500">Đang học</p>
-              <h4 className="text-2xl font-bold text-slate-800">{initialStudents.filter(s => s.status === 'ACTIVE').length}</h4>
+              <h4 className="text-2xl font-bold text-slate-800">{initialStudents.filter((s: any) => s.status === 'ACTIVE').length}</h4>
             </div>
           </div>
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
@@ -134,7 +134,7 @@ export function StudentsClient({ initialStudents, classes }: { initialStudents: 
             </div>
             <div>
               <p className="text-sm font-medium text-slate-500">Đình chỉ</p>
-              <h4 className="text-2xl font-bold text-slate-800">{initialStudents.filter(s => s.status === 'SUSPENDED').length}</h4>
+              <h4 className="text-2xl font-bold text-slate-800">{initialStudents.filter((s: any) => s.status === 'SUSPENDED').length}</h4>
             </div>
           </div>
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
@@ -143,7 +143,7 @@ export function StudentsClient({ initialStudents, classes }: { initialStudents: 
             </div>
             <div>
               <p className="text-sm font-medium text-slate-500">Nghỉ học</p>
-              <h4 className="text-2xl font-bold text-slate-800">{initialStudents.filter(s => s.status === 'DROPPED').length}</h4>
+              <h4 className="text-2xl font-bold text-slate-800">{initialStudents.filter((s: any) => s.status === 'DROPPED').length}</h4>
             </div>
           </div>
         </div>

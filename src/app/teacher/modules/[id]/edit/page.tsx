@@ -55,11 +55,11 @@ export default async function EditModuleTeacherPage({
     totalScore: moduleData.totalScore,
     deadlineDate: moduleData.deadline ? new Date(moduleData.deadline) : new Date(),
     deadlineTime: moduleData.deadline ? new Date(moduleData.deadline).toISOString().substring(11, 16) : "23:59",
-    sections: moduleData.sections.map(sec => ({
+    sections: moduleData.sections.map((sec: any) => ({
       id: sec.id,
       title: sec.title,
       timeLimit: sec.timeLimit,
-      questions: sec.questions.map(q => {
+      questions: sec.questions.map((q: any) => {
         let contentObj = {}
         try {
           contentObj = JSON.parse(q.content)

@@ -145,11 +145,11 @@ export function ModuleForm({
     const deadlineStr = format(values.deadlineDate, 'yyyy-MM-dd')
     const deadlineISO = new Date(`${deadlineStr}T${values.deadlineTime}:00`).toISOString()
 
-    const processedSections = values.sections?.map(sec => ({
+    const processedSections = values.sections?.map((sec: any) => ({
       ...sec,
-      questions: sec.questions?.map(q => {
+      questions: sec.questions?.map((q: any) => {
         const { id, type, instruction, score, ...contentObj } = q
-        Object.keys(contentObj).forEach(key => contentObj[key] === undefined && delete contentObj[key])
+        Object.keys(contentObj).forEach((key: any) => contentObj[key] === undefined && delete contentObj[key])
         
         if (contentObj.paragraphs) {
           contentObj.paragraphs = contentObj.paragraphs.map((p: any) => p.value)
@@ -249,7 +249,7 @@ export function ModuleForm({
                   <FormControl>
                     <SelectTrigger className="focus:ring-blue-500 text-base">
                       <span data-slot="select-value" className={cn("line-clamp-1 flex items-center", !field.value && "text-muted-foreground")}>
-                        {field.value ? classes.find(c => c.id === field.value)?.name : "Chọn lớp học..."}
+                        {field.value ? classes.find((c: any) => c.id === field.value)?.name : "Chọn lớp học..."}
                       </span>
                     </SelectTrigger>
                   </FormControl>

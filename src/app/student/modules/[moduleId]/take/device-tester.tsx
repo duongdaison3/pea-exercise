@@ -20,7 +20,7 @@ export function DeviceTester({ onComplete }: DeviceTesterProps) {
     return () => {
       // Cleanup microphone stream
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop())
+        streamRef.current.getTracks().forEach((track: any) => track.stop())
       }
       if (audioContextRef.current) {
         audioContextRef.current.close()

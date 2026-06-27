@@ -56,7 +56,7 @@ export default async function GradingOverviewPage() {
   })
 
   // Format data for the data table
-  const formattedData = pendingAnswers.map(ans => ({
+  const formattedData = pendingAnswers.map((ans: any) => ({
     id: ans.id,
     studentName: ans.student.name,
     studentEmail: ans.student.email,

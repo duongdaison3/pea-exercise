@@ -29,7 +29,7 @@ export async function PATCH(
       if (!student) return NextResponse.json({ error: 'Not found' }, { status: 404 });
       
       const isCreator = student.createdById === user.id;
-      const isInClass = student.enrollments.some(e => e.class.teacherId === user.id);
+      const isInClass = student.enrollments.some((e: any) => e.class.teacherId === user.id);
       
       if (!isCreator && !isInClass) {
         return NextResponse.json({ error: 'Không có quyền chỉnh sửa học viên này' }, { status: 403 });

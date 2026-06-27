@@ -67,8 +67,8 @@ export async function PUT(
         include: { questions: true }
       });
 
-      const existingSectionIds = new Set(existingSections.map(s => s.id));
-      const existingQuestionIds = new Set(existingSections.flatMap(s => s.questions.map(q => q.id)));
+      const existingSectionIds = new Set(existingSections.map((s: any) => s.id));
+      const existingQuestionIds = new Set(existingSections.flatMap((s: any) => s.questions.map((q: any) => q.id)));
 
       // Sets to track what is kept
       const keptSectionIds = new Set<string>();
@@ -137,7 +137,7 @@ export async function PUT(
       }
 
       // Delete removed questions
-      const questionsToDelete = Array.from(existingQuestionIds).filter(qid => !keptQuestionIds.has(qid));
+      const questionsToDelete = Array.from(existingQuestionIds).filter((qid: any) => !keptQuestionIds.has(qid));
       if (questionsToDelete.length > 0) {
         // Check if any has StudentAnswer
         const hasAnswers = await tx.studentAnswer.findFirst({
@@ -152,7 +152,7 @@ export async function PUT(
       }
 
       // Delete removed sections
-      const sectionsToDelete = Array.from(existingSectionIds).filter(sid => !keptSectionIds.has(sid));
+      const sectionsToDelete = Array.from(existingSectionIds).filter((sid: any) => !keptSectionIds.has(sid));
       if (sectionsToDelete.length > 0) {
         await tx.section.deleteMany({
           where: { id: { in: sectionsToDelete } }

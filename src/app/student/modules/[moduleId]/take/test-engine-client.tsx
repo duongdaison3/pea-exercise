@@ -19,7 +19,7 @@ export function TestEngineClient({ moduleData, sections }: { moduleData: any, se
   const router = useRouter()
 
   const flatQuestions = useMemo(() => {
-    return sections.flatMap(sec => sec.questions.map((q: any) => ({ ...q, sectionTitle: sec.title })))
+    return sections.flatMap((sec: any) => sec.questions.map((q: any) => ({ ...q, sectionTitle: sec.title })))
   }, [sections])
 
   const [currentIndex, setCurrentIndex] = useState(0)

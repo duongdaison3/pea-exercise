@@ -50,7 +50,7 @@ export default async function StudentResultsPage({ params }: { params: Promise<{
   }
 
   // Determine overall status
-  const hasPendingReview = answers.some(ans => ans.status === 'PENDING_TEACHER_REVIEW' || ans.status === 'AI_GRADED' || ans.status === 'SUBMITTED')
+  const hasPendingReview = answers.some((ans: any) => ans.status === 'PENDING_TEACHER_REVIEW' || ans.status === 'AI_GRADED' || ans.status === 'SUBMITTED')
   const overallStatus = hasPendingReview ? 'PENDING' : 'COMPLETED'
 
   // Calculate scores

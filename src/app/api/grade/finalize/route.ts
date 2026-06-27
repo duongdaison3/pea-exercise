@@ -54,7 +54,7 @@ export async function POST(req: Request) {
       }
     })
 
-    const allCompleted = allModuleAnswers.every(ans => ans.status === 'COMPLETED')
+    const allCompleted = allModuleAnswers.every((ans: any) => ans.status === 'COMPLETED')
     let totalScore = 0
 
     if (allCompleted) {

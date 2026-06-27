@@ -41,7 +41,7 @@ export function SpeakingComponent({ question, onComplete }: { question: any, onC
 
       mediaRecorder.onstop = () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
-        stream.getTracks().forEach(track => track.stop())
+        stream.getTracks().forEach((track: any) => track.stop())
         setStatus('finished')
         onComplete(audioBlob)
       }

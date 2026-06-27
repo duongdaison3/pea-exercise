@@ -13,7 +13,7 @@ import { vi } from 'date-fns/locale'
 export function ClassesClient({ initialClasses, teachers }: { initialClasses: any[], teachers: any[] }) {
   const [searchTerm, setSearchTerm] = useState('')
 
-  const filteredClasses = initialClasses.filter(c => 
+  const filteredClasses = initialClasses.filter((c: any) => 
     c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     c.teacher.name.toLowerCase().includes(searchTerm.toLowerCase())
   )

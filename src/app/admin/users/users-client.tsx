@@ -45,7 +45,7 @@ export function AdminUsersClient({ initialUsers }: { initialUsers: any[] }) {
   }
 
   // Filtering
-  const filteredUsers = initialUsers.filter(user => {
+  const filteredUsers = initialUsers.filter((user: any) => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           (user.phone && user.phone.includes(searchTerm));
@@ -154,7 +154,7 @@ export function AdminUsersClient({ initialUsers }: { initialUsers: any[] }) {
             </div>
             <div>
               <p className="text-sm font-medium text-slate-500">Giáo viên</p>
-              <h4 className="text-2xl font-bold text-slate-800">{initialUsers.filter(u => u.role === 'TEACHER').length}</h4>
+              <h4 className="text-2xl font-bold text-slate-800">{initialUsers.filter((u: any) => u.role === 'TEACHER').length}</h4>
             </div>
           </div>
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
@@ -163,7 +163,7 @@ export function AdminUsersClient({ initialUsers }: { initialUsers: any[] }) {
             </div>
             <div>
               <p className="text-sm font-medium text-slate-500">Học viên</p>
-              <h4 className="text-2xl font-bold text-slate-800">{initialUsers.filter(u => u.role === 'STUDENT').length}</h4>
+              <h4 className="text-2xl font-bold text-slate-800">{initialUsers.filter((u: any) => u.role === 'STUDENT').length}</h4>
             </div>
           </div>
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
@@ -172,7 +172,7 @@ export function AdminUsersClient({ initialUsers }: { initialUsers: any[] }) {
             </div>
             <div>
               <p className="text-sm font-medium text-slate-500">Quản trị viên</p>
-              <h4 className="text-2xl font-bold text-slate-800">{initialUsers.filter(u => u.role === 'ADMIN').length}</h4>
+              <h4 className="text-2xl font-bold text-slate-800">{initialUsers.filter((u: any) => u.role === 'ADMIN').length}</h4>
             </div>
           </div>
         </div>

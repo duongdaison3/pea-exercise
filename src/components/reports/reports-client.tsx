@@ -42,7 +42,7 @@ export function ReportsClient({ attempts, classes, title, description }: Reports
   const [statusFilter, setStatusFilter] = useState('ALL')
 
   // Filtering logic
-  const filteredAttempts = attempts.filter(a => {
+  const filteredAttempts = attempts.filter((a: any) => {
     // Search filter
     const matchesSearch = 
       a.studentName.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -62,7 +62,7 @@ export function ReportsClient({ attempts, classes, title, description }: Reports
 
   const exportExcel = () => {
     // Create data array for Excel
-    const data = filteredAttempts.map(a => ({
+    const data = filteredAttempts.map((a: any) => ({
       'Mã Học viên': a.studentId,
       'Tên Học viên': a.studentName,
       'Lớp': a.className,
