@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client'
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -22,11 +21,7 @@ export default async function StudentClassDetailsPage({ params }: { params: Prom
   })
   if (!enrollment) notFound()
 
-  const classInfo: Prisma.ClassGetPayload<{
-    include: {
-      modules: true
-    }
-  }> | null = await prisma.class.findUnique({
+  const classQuery = prisma.class.findUnique({
     where: { id },
     include: {
       modules: {
@@ -35,7 +30,11 @@ export default async function StudentClassDetailsPage({ params }: { params: Prom
     }
   });
 
+  const classInfo = await classQuery
+
   if (!classInfo) notFound()
+
+  type ModuleItem = NonNullable<Awaited<typeof classQuery>>['modules'][number]
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -58,7 +57,7 @@ export default async function StudentClassDetailsPage({ params }: { params: Prom
             <div className="p-6 text-center text-sm text-slate-500">Lớp học này chưa có module nào.</div>
           ) : (
             <ul className="divide-y divide-slate-100">
-              {classInfo.modules.map((module: any) => (
+              {classInfo.modules.map((module: ModuleItem) => (
                 <li key={module.id} className="p-4 sm:px-6 hover:bg-slate-50/80 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4 group">
                   <div className="space-y-1">
                     <div className="flex items-center gap-3">

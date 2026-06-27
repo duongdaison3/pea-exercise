@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { notFound } from 'next/navigation'
@@ -15,14 +14,7 @@ export default async function ClassDetailsPage({ params }: { params: Promise<{ i
   const cookie = (await cookies()).get('session')?.value
   const session = await decrypt(cookie) as { userId: string } | null
   
-  const classInfo: Prisma.ClassGetPayload<{
-    include: {
-      enrollments: {
-        include: { student: true }
-      }
-      modules: true
-    }
-  }> | null = await prisma.class.findUnique({
+  const classQuery = prisma.class.findUnique({
     where: { id, teacherId: session?.userId },
     include: {
       enrollments: {
@@ -34,7 +26,11 @@ export default async function ClassDetailsPage({ params }: { params: Promise<{ i
     }
   })
 
+  const classInfo = await classQuery
+
   if (!classInfo) notFound()
+
+  type ModuleItem = NonNullable<Awaited<typeof classQuery>>['modules'][number]
 
   // Lấy các học viên do giáo viên này tạo nhưng CHƯA tham gia lớp này
   const availableStudents = await prisma.user.findMany({
@@ -48,7 +44,7 @@ export default async function ClassDetailsPage({ params }: { params: Promise<{ i
   const totalStudents = classInfo.enrollments.length
 
   // Build module stats
-  const moduleStatsPromises = classInfo.modules.map(async (mod) => {
+  const moduleStatsPromises = classInfo.modules.map(async (mod: ModuleItem) => {
     // Unique students who have submitted at least one answer in this module
     const uniqueStudentsSubmitted = await prisma.studentAnswer.findMany({
       where: {
