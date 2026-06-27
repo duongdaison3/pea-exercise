@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { BookOpen, Search, Settings, Calendar, Users } from "lucide-react"
 import Link from "next/link"
 import { CreateClassDialog } from './create-class-dialog'
+import { EditClassDialog } from './edit-class-dialog'
 import { format } from 'date-fns'
 import { vi } from 'date-fns/locale'
 
@@ -95,13 +96,7 @@ export function ClassesClient({ initialClasses, teachers }: { initialClasses: an
                   </div>
                 </div>
                 
-                {/* 
-                // Currently admin doesn't have a class management page. They just see the list.
-                // We could add an edit button, but for now we just list them.
-                <Button variant="outline" className="w-full">
-                  <Settings className="w-4 h-4 mr-2" /> Cấu hình lớp
-                </Button>
-                */}
+                <EditClassDialog classData={c} teachers={teachers} />
               </CardContent>
             </Card>
           ))}
