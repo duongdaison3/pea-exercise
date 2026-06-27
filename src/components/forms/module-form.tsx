@@ -89,7 +89,7 @@ const formSchema = z.object({
 }).superRefine((data, ctx) => {
   let total = data.totalScore || 0;
   if (data.scoringMode === 'PER_QUESTION') {
-    total = data.sections?.reduce((sum, sec) => sum + (sec.questions?.reduce((qSum, q) => qSum + (Number(q.score) || 0), 0) || 0), 0) || 0;
+    total = data.sections?.reduce((sum: number, sec: any) => sum + (sec.questions?.reduce((qSum: number, q: any) => qSum + (Number(q.score) || 0), 0) || 0), 0) || 0;
   }
   if (data.passingScore > total) {
     ctx.addIssue({
@@ -136,7 +136,7 @@ export function ModuleForm({
   const scoringMode = form.watch("scoringMode")
   const sectionsWatch = form.watch("sections")
   const calculatedTotal = useMemo(() => {
-    return sectionsWatch?.reduce((sum, sec) => sum + (sec.questions?.reduce((qSum, q) => qSum + (Number(q.score) || 0), 0) || 0), 0) || 0;
+    return sectionsWatch?.reduce((sum: number, sec: any) => sum + (sec.questions?.reduce((qSum: number, q: any) => qSum + (Number(q.score) || 0), 0) || 0), 0) || 0;
   }, [sectionsWatch])
 
   async function onSubmit(values: z.infer<typeof formSchema>, isPublished: boolean) {

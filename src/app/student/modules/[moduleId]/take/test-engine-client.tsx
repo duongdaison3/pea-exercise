@@ -140,7 +140,7 @@ export function TestEngineClient({ moduleData, sections }: { moduleData: any, se
         </div>
         <div className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-thin scrollbar-thumb-slate-200">
           {sections.map((sec, secIdx) => {
-             const startIndex = sections.slice(0, secIdx).reduce((acc, s) => acc + s.questions.length, 0)
+             const startIndex = sections.slice(0, secIdx).reduce((acc: number, s: any) => acc + s.questions.length, 0)
              return (
                <div key={sec.id} className="space-y-3">
                  <h4 className="font-semibold text-slate-700 text-sm uppercase tracking-wide px-1">{sec.title}</h4>

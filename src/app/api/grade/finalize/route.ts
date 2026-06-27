@@ -58,7 +58,7 @@ export async function POST(req: Request) {
     let totalScore = 0
 
     if (allCompleted) {
-      totalScore = allModuleAnswers.reduce((sum, ans) => sum + (ans.finalScore || 0), 0)
+      totalScore = allModuleAnswers.reduce((sum: number, ans: any) => sum + (ans.finalScore || 0), 0)
       console.log(`Học viên ${answer.studentId} đã hoàn thành toàn bộ bài thi ${answer.question.moduleId}. Tổng điểm: ${totalScore}`)
       // Trong tương lai nếu có bảng StudentModuleResult thì sẽ lưu vào đây
     }
