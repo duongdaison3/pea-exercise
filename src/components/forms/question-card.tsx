@@ -4,7 +4,7 @@
 
 import * as React from "react"
 import { useFieldArray } from "react-hook-form"
-import { Trash2, ArrowUp, ArrowDown, Plus, X } from "lucide-react"
+import { Trash2, ArrowUp, ArrowDown, Plus, X, Edit2, Save } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -53,7 +53,10 @@ const QUESTION_TYPES: Record<string, string> = {
 export function QuestionCard({ sectionIndex, questionIndex, remove, move, form, isFirst, isLast, sectionsCount }: any) {
   const questionPath = `sections.${sectionIndex}.questions.${questionIndex}`;
   const [isUploading, setIsUploading] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(false)
+  
   const questionType = form.watch(`${questionPath}.type`)
+  const instruction = form.watch(`${questionPath}.instruction`) || ""
 
   const handleUpload = async (file: File, fieldName: string) => {
     setIsUploading(true)
@@ -83,6 +86,28 @@ export function QuestionCard({ sectionIndex, questionIndex, remove, move, form, 
   const showOptions = ['MULTIPLE_CHOICE_SINGLE', 'MULTIPLE_CHOICE_MULTIPLE', 'HIGHLIGHT_CORRECT_SUMMARY', 'SELECT_MISSING_WORD'].includes(questionType)
   const showText = ['FIB_READING_WRITING', 'FIB_READING', 'FIB_LISTENING', 'MULTIPLE_CHOICE_SINGLE', 'MULTIPLE_CHOICE_MULTIPLE'].includes(questionType)
   const showReorderParagraphs = ['REORDER_PARAGRAPHS'].includes(questionType)
+
+  if (isCollapsed) {
+    return (
+      <div className="bg-white border border-slate-200 rounded-xl p-4 flex items-center justify-between shadow-sm transition-all hover:border-blue-300">
+        <div className="flex flex-col gap-1 flex-1 mr-4">
+          <div className="flex items-center space-x-2">
+            <span className="font-bold text-slate-700">Câu {questionIndex + 1}</span>
+            <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full font-semibold">{QUESTION_TYPES[questionType] || questionType || "Chưa chọn loại"}</span>
+          </div>
+          <div className="text-sm text-slate-500 line-clamp-1 max-w-[500px]" dangerouslySetInnerHTML={{ __html: instruction || "(Chưa có đề bài)" }} />
+        </div>
+        <div className="flex space-x-2 shrink-0">
+          <Button type="button" variant="outline" size="sm" onClick={() => setIsCollapsed(false)} className="text-blue-600 border-blue-200 hover:bg-blue-50">
+            <Edit2 className="w-4 h-4 mr-2" /> Sửa câu hỏi
+          </Button>
+          <Button type="button" variant="ghost" size="icon" onClick={() => remove(questionIndex)} className="text-slate-400 hover:text-red-500">
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 relative">
@@ -370,6 +395,12 @@ export function QuestionCard({ sectionIndex, questionIndex, remove, move, form, 
         )}
 
       </div>
+      
+      <div className="mt-6 flex justify-end pt-4 border-t border-slate-200">
+        <Button type="button" onClick={() => setIsCollapsed(true)} className="bg-slate-800 hover:bg-slate-900 text-white shadow-sm">
+          <Save className="w-4 h-4 mr-2" /> Lưu câu hỏi (Thu gọn)
+        </Button>
+      </div>
     </div>
   )
 }
@@ -378,6 +409,11 @@ import { UseFormReturn } from "react-hook-form"
 
 function FIBBuilder({ questionPath, form }: { questionPath: string, form: UseFormReturn<any> }) {
   const textAreaRef = React.useRef<HTMLTextAreaElement>(null)
+  
+  const { fields, remove } = useFieldArray({
+    control: form.control,
+    name: `${questionPath}.options`
+  })
 
   const handleCreateBlank = () => {
     const el = textAreaRef.current
@@ -391,14 +427,14 @@ function FIBBuilder({ questionPath, form }: { questionPath: string, form: UseFor
     const text = form.getValues(`${questionPath}.text`) || ""
     const selectedWord = text.substring(start, end).trim()
     
-    const matchBlanks = text.match(/\[BLANK_\d+\]/g)
-    const blankCount = matchBlanks ? matchBlanks.length : 0
+    // Tìm index mới nhất dựa trên độ dài hiện tại của mảng options
+    const currentOptions = form.getValues(`${questionPath}.options`) || []
+    const blankCount = currentOptions.length
     const blankTag = `[BLANK_${blankCount}]`
     
     const newText = text.substring(0, start) + blankTag + text.substring(end)
     form.setValue(`${questionPath}.text`, newText)
     
-    const currentOptions = form.getValues(`${questionPath}.options`) || []
     form.setValue(`${questionPath}.options`, [...currentOptions, { value: selectedWord, isCorrect: true }])
   }
 
@@ -430,6 +466,33 @@ function FIBBuilder({ questionPath, form }: { questionPath: string, form: UseFor
         )}
       />
       <p className="text-xs text-blue-600">Bôi đen một từ trong Textarea trên rồi bấm nút, hệ thống sẽ tự sinh thẻ [BLANK_X] và chèn đáp án vào bên dưới.</p>
+
+      {fields.length > 0 && (
+        <div className="mt-4 space-y-2">
+          <Label className="text-blue-900 font-semibold text-sm">Các ô trống đã tạo:</Label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {fields.map((field, idx) => (
+              <div key={field.id} className="flex items-center space-x-2 bg-white p-2 rounded-md border border-blue-100 shadow-sm">
+                <span className="text-xs font-bold text-blue-800 bg-blue-100 px-2 py-1 rounded w-[85px] text-center shrink-0">[BLANK_{idx}]</span>
+                <FormField
+                  control={form.control}
+                  name={`${questionPath}.options.${idx}.value`}
+                  render={({ field }) => (
+                    <FormItem className="flex-1 space-y-0">
+                      <FormControl>
+                        <Input className="h-8 text-sm border-blue-200" placeholder="Đáp án đúng..." {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-red-500 shrink-0" onClick={() => remove(idx)}>
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

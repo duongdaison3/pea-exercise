@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, useFieldArray } from "react-hook-form"
 import * as z from "zod"
 import { format } from "date-fns"
-import { CalendarIcon, Save, Send, Plus } from "lucide-react"
+import { CalendarIcon, Save, Send, Plus, ChevronDown, ChevronUp } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -429,10 +429,19 @@ export function ModuleForm({
                 sectionsCount={sections.length}
               />
             ))}
-            {sections.length === 0 && (
+            {sections.length === 0 ? (
               <div className="text-center p-8 bg-slate-50 border border-dashed border-slate-300 rounded-xl">
                 <p className="text-slate-500">Chưa có phần thi nào. Bấm nút &quot;Thêm Phần thi&quot; để bắt đầu.</p>
               </div>
+            ) : (
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => appendSection({ title: `Phần ${sections.length + 1}`, timeLimit: 0, questions: [] })}
+                className="w-full h-12 border-dashed border-2 border-indigo-200 text-indigo-700 hover:bg-indigo-50 font-semibold"
+              >
+                <Plus className="w-5 h-5 mr-2" /> Thêm Phần thi mới
+              </Button>
             )}
           </div>
         </div>
@@ -464,14 +473,20 @@ export function ModuleForm({
 }
 
 function SectionBuilder({ form, sectionIndex, removeSection, moveSection, isFirst, isLast, sectionsCount }: any) {
+  const [isCollapsed, setIsCollapsed] = useState(false)
+  const title = form.watch(`sections.${sectionIndex}.title`) || `Phần ${sectionIndex + 1}`
+  
   const { fields: questions, append: appendQuestion, remove: removeQuestion, move: moveQuestion } = useFieldArray({
     control: form.control,
     name: `sections.${sectionIndex}.questions`
   })
 
   return (
-    <div className="border border-indigo-100 bg-slate-50 rounded-2xl p-6 relative shadow-sm">
-      <div className="absolute top-4 right-4 flex space-x-1">
+    <div className={cn("border border-indigo-100 bg-slate-50 rounded-2xl relative shadow-sm transition-all", isCollapsed ? "p-4 hover:border-indigo-300" : "p-6")}>
+      <div className="absolute top-4 right-4 flex space-x-1 z-10">
+        <Button type="button" variant="ghost" size="icon" onClick={() => setIsCollapsed(!isCollapsed)}>
+          {isCollapsed ? <ChevronDown className="w-5 h-5 text-indigo-500" /> : <ChevronUp className="w-5 h-5 text-indigo-500" />}
+        </Button>
         <Button type="button" variant="ghost" size="icon" disabled={isFirst} onClick={() => moveSection(sectionIndex, sectionIndex - 1)}>
           <span className="sr-only">Move Up</span>
           ↑
@@ -486,69 +501,87 @@ function SectionBuilder({ form, sectionIndex, removeSection, moveSection, isFirs
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 pr-24">
-        <FormField
-          control={form.control}
-          name={`sections.${sectionIndex}.title`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-indigo-900 font-semibold">Tên phần thi <span className="text-red-500">*</span></FormLabel>
-              <FormControl>
-                <Input placeholder="VD: Part 1: Reading..." className="bg-white" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name={`sections.${sectionIndex}.timeLimit`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-indigo-900 font-semibold">Thời gian tối đa (Phút)</FormLabel>
-              <FormControl>
-                <Input type="number" min={0} className="bg-white" {...field} />
-              </FormControl>
-              <FormDescription className="text-xs">Để 0 nếu muốn dùng chung thời gian Bài Test.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
-
-      <div className="space-y-4 mt-6">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold text-slate-700">Các câu hỏi trong phần này</h3>
-          <Button 
-            type="button" 
-            size="sm"
-            onClick={() => appendQuestion({ type: 'READ_ALOUD', instruction: '' })}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            <Plus className="w-4 h-4 mr-2" /> Thêm câu hỏi
-          </Button>
+      {isCollapsed ? (
+        <div className="flex flex-col gap-1 pr-32 cursor-pointer" onClick={() => setIsCollapsed(false)}>
+          <h3 className="font-bold text-lg text-indigo-900">{title}</h3>
+          <p className="text-sm text-slate-500">{questions.length} câu hỏi</p>
         </div>
-
-        {questions.map((field: any, index: number) => (
-          <QuestionCard 
-            key={field.id} 
-            sectionIndex={sectionIndex}
-            questionIndex={index} 
-            remove={removeQuestion} 
-            move={moveQuestion} 
-            form={form} 
-            isFirst={index === 0} 
-            isLast={index === questions.length - 1} 
-            sectionsCount={sectionsCount}
-          />
-        ))}
-
-        {questions.length === 0 && (
-          <div className="text-center p-6 bg-white border border-dashed border-slate-300 rounded-xl">
-            <p className="text-slate-500 text-sm">Phần thi này chưa có câu hỏi. Bấm &quot;Thêm câu hỏi&quot; để thiết kế đề.</p>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 pr-32">
+            <FormField
+              control={form.control}
+              name={`sections.${sectionIndex}.title`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-indigo-900 font-semibold">Tên phần thi <span className="text-red-500">*</span></FormLabel>
+                  <FormControl>
+                    <Input placeholder="VD: Part 1: Reading..." className="bg-white" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name={`sections.${sectionIndex}.timeLimit`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-indigo-900 font-semibold">Thời gian tối đa (Phút)</FormLabel>
+                  <FormControl>
+                    <Input type="number" min={0} className="bg-white" {...field} />
+                  </FormControl>
+                  <FormDescription className="text-xs">Để 0 nếu muốn dùng chung thời gian Bài Test.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
-        )}
-      </div>
+
+          <div className="space-y-4 mt-6 border-t border-indigo-100 pt-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-slate-700">Các câu hỏi trong phần này</h3>
+              <Button 
+                type="button" 
+                size="sm"
+                onClick={() => appendQuestion({ type: 'READ_ALOUD', instruction: '' })}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <Plus className="w-4 h-4 mr-2" /> Thêm câu hỏi
+              </Button>
+            </div>
+
+            {questions.map((field: any, index: number) => (
+              <QuestionCard 
+                key={field.id} 
+                sectionIndex={sectionIndex}
+                questionIndex={index} 
+                remove={removeQuestion} 
+                move={moveQuestion} 
+                form={form} 
+                isFirst={index === 0} 
+                isLast={index === questions.length - 1} 
+                sectionsCount={sectionsCount}
+              />
+            ))}
+
+            {questions.length === 0 ? (
+              <div className="text-center p-6 bg-white border border-dashed border-slate-300 rounded-xl">
+                <p className="text-slate-500 text-sm">Phần thi này chưa có câu hỏi. Bấm &quot;Thêm câu hỏi&quot; để thiết kế đề.</p>
+              </div>
+            ) : (
+              <Button 
+                type="button" 
+                variant="outline"
+                onClick={() => appendQuestion({ type: 'READ_ALOUD', instruction: '' })}
+                className="w-full mt-4 border-dashed border-2 text-blue-600 hover:bg-blue-50"
+              >
+                <Plus className="w-4 h-4 mr-2" /> Thêm câu hỏi mới vào {title}
+              </Button>
+            )}
+          </div>
+        </>
+      )}
     </div>
   )
 }
