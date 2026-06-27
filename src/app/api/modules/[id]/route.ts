@@ -51,7 +51,7 @@ export async function PUT(
       : 0;
 
     // Smart Upsert logic
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       // 1. Update basic module info
       await tx.module.update({
         where: { id },
