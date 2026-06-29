@@ -94,9 +94,12 @@ export function QuestionCard({ sectionIndex, questionIndex, remove, move, form, 
       const data = await res.json()
       if (data.url) {
         form.setValue(`${questionPath}.${fieldName}`, data.url)
+      } else {
+        alert(data.error || "Tải lên thất bại. Vui lòng thử lại!")
       }
     } catch (e) {
       console.error(e)
+      alert("Lỗi kết nối khi tải lên. Vui lòng thử lại!")
     }
     setIsUploading(false)
   }
