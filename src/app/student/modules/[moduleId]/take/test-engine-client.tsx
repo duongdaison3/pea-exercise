@@ -112,17 +112,17 @@ export function TestEngineClient({ moduleData, sections }: { moduleData: any, se
     }
   }
 
-  if (status === 'testing_device') {
-    return <DeviceTester onComplete={handleDeviceTestComplete} />
-  }
-
   const handleNextRef = useRef(handleNext)
   useEffect(() => {
     handleNextRef.current = handleNext
   })
   
   const onComplete = useCallback((data: any) => handleNextRef.current(data), [])
-  const onChange = useCallback((val: any) => setAnswers(prev => ({ ...prev, [currentQuestion.id]: val })), [currentQuestion.id])
+  const onChange = useCallback((val: any) => setAnswers(prev => ({ ...prev, [currentQuestion?.id]: val })), [currentQuestion?.id])
+
+  if (status === 'testing_device') {
+    return <DeviceTester onComplete={handleDeviceTestComplete} />
+  }
 
   return (
     <div className="w-full max-w-[1400px] mx-auto flex flex-col lg:flex-row gap-6 h-[calc(100vh-140px)] select-none" onContextMenu={(e) => e.preventDefault()}>
