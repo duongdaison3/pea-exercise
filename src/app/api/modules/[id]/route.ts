@@ -158,6 +158,9 @@ export async function PUT(
           where: { id: { in: sectionsToDelete } }
         });
       }
+    }, {
+      maxWait: 5000,
+      timeout: 20000,
     });
 
     return NextResponse.json({ success: true, moduleId: id });

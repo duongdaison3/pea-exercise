@@ -13,26 +13,13 @@ export async function POST(request: Request) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
     
-    // Attempt to get the original filename or generate one
-    let originalName = `upload_${Date.now()}.bin`;
-    if (file instanceof File) {
-      originalName = file.name;
-    } else if ((file as { name?: string }).name) {
-      originalName = (file as { name?: string }).name || originalName;
-    }
+    // Instead of saving to disk, convert to a Data URL (base64)
+    // This avoids EROFS on Vercel's read-only file system
+    const mimeType = file.type || 'application/octet-stream';
+    const base64 = buffer.toString('base64');
+    const dataUrl = `data:${mimeType};base64,${base64}`;
 
-    const cleanName = originalName.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const filename = `${Date.now()}-${cleanName}`;
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-
-    const filePath = path.join(uploadDir, filename);
-    fs.writeFileSync(filePath, buffer);
-
-    return NextResponse.json({ url: `/uploads/${filename}` });
+    return NextResponse.json({ url: dataUrl });
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

@@ -19,19 +19,10 @@ export async function submitAnswer(formData: FormData) {
     let audioUrl = null
 
     if (audioBlob && audioBlob.size > 0) {
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads')
-      try {
-        await fs.access(uploadDir)
-      } catch {
-        await fs.mkdir(uploadDir, { recursive: true })
-      }
-
       const buffer = Buffer.from(await audioBlob.arrayBuffer())
-      const fileName = `audio_${session.userId}_${questionId}_${Date.now()}.webm`
-      const filePath = path.join(uploadDir, fileName)
-      
-      await fs.writeFile(filePath, buffer)
-      audioUrl = `/uploads/${fileName}`
+      const base64 = buffer.toString('base64')
+      const mimeType = audioBlob.type || 'audio/webm'
+      audioUrl = `data:${mimeType};base64,${base64}`
     }
 
     const existingAnswer = await prisma.studentAnswer.findFirst({

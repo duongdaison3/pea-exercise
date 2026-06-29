@@ -94,6 +94,9 @@ export async function POST(request: Request) {
       }
 
       return newModule;
+    }, {
+      maxWait: 5000,
+      timeout: 20000,
     });
 
     return NextResponse.json({ success: true, moduleId: result.id });
