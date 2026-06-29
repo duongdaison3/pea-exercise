@@ -184,9 +184,12 @@ export function TestEngineClient({ moduleData, sections }: { moduleData: any, se
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 flex flex-col bg-slate-50/30">
-          <div className="bg-white p-5 rounded-xl border border-slate-200 mb-6 shadow-sm relative overflow-hidden group">
+          <div className="shrink-0 bg-white p-5 rounded-xl border border-slate-200 mb-6 shadow-sm relative overflow-hidden group">
              <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500"></div>
-             <p className="text-slate-700 font-medium text-lg leading-relaxed ml-2">{currentQuestion.instruction}</p>
+           <div 
+             className="text-slate-700 font-medium text-lg leading-relaxed ml-2 prose prose-p:my-1 prose-strong:text-blue-700 max-w-none"
+             dangerouslySetInnerHTML={{ __html: currentQuestion.instruction }}
+           />
           </div>
 
           <div className="flex-1 relative">
