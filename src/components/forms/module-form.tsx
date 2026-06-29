@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 import { useState, useMemo } from "react"
-import { QuestionCard } from "./question-card"
+import { QuestionCard, QUESTION_DEFAULTS } from "./question-card"
 
 const questionSchema = z.object({
   id: z.string().optional(),
@@ -44,6 +44,9 @@ const questionSchema = z.object({
   audioUrl: z.string().optional(),
   imageUrl: z.string().optional(),
   transcript: z.string().optional(),
+  prepTime: z.coerce.number().optional(),
+  recordTime: z.coerce.number().optional(),
+  timeLimit: z.coerce.number().optional(),
   minWords: z.coerce.number().optional(),
   maxWords: z.coerce.number().optional(),
   text: z.string().optional(),
@@ -544,7 +547,7 @@ function SectionBuilder({ form, sectionIndex, removeSection, moveSection, isFirs
               <Button 
                 type="button" 
                 size="sm"
-                onClick={() => appendQuestion({ type: 'READ_ALOUD', instruction: '' })}
+                onClick={() => appendQuestion({ type: 'READ_ALOUD', ...QUESTION_DEFAULTS.READ_ALOUD })}
                 className="bg-blue-600 hover:bg-blue-700 text-white"
               >
                 <Plus className="w-4 h-4 mr-2" /> Thêm câu hỏi
@@ -573,7 +576,7 @@ function SectionBuilder({ form, sectionIndex, removeSection, moveSection, isFirs
               <Button 
                 type="button" 
                 variant="outline"
-                onClick={() => appendQuestion({ type: 'READ_ALOUD', instruction: '' })}
+                onClick={() => appendQuestion({ type: 'READ_ALOUD', ...QUESTION_DEFAULTS.READ_ALOUD })}
                 className="w-full mt-4 border-dashed border-2 text-blue-600 hover:bg-blue-50"
               >
                 <Plus className="w-4 h-4 mr-2" /> Thêm câu hỏi mới vào {title}

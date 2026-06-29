@@ -50,6 +50,27 @@ const QUESTION_TYPES: Record<string, string> = {
   FIB_LISTENING: "FIB (Listening)"
 }
 
+export const QUESTION_DEFAULTS: Record<string, any> = {
+  READ_ALOUD: { instruction: '<p><strong>Text appears on the screen. Read the text aloud.</strong></p>', prepTime: 40, recordTime: 40 },
+  REPEAT_SENTENCE: { instruction: '<p><strong>After listening to a recording of a sentence, repeat the sentence.</strong></p>', prepTime: 3, recordTime: 15 },
+  DESCRIBE_IMAGE: { instruction: '<p><strong>An image appears on the screen. Describe the image in detail.</strong></p>', prepTime: 25, recordTime: 40 },
+  RETELL_LECTURE: { instruction: '<p><strong>After listening to or watching a lecture, retell the lecture in your own words.</strong></p>', prepTime: 10, recordTime: 40 },
+  ANSWER_SHORT_QUESTION: { instruction: '<p><strong>After listening to a question, answer with a single word or a few words.</strong></p>', prepTime: 3, recordTime: 10 },
+  SUMMARIZE_WRITTEN_TEXT: { instruction: '<p><strong>After reading the text, write a one-sentence summary of the passage.</strong></p>', timeLimit: 600, minWords: 5, maxWords: 75 },
+  WRITE_ESSAY: { instruction: '<p><strong>Write a 200–300 word essay on a given topic.</strong></p>', timeLimit: 1200, minWords: 200, maxWords: 300 },
+  SUMMARIZE_SPOKEN_TEXT: { instruction: '<p><strong>After listening to a recording, write a 50–70 word summary.</strong></p>', timeLimit: 600, minWords: 50, maxWords: 70 },
+  WRITE_FROM_DICTATION: { instruction: '<p><strong>You will hear a sentence. Type the sentence in the box below exactly as you hear it. You will hear the sentence only once.</strong></p>' },
+  MULTIPLE_CHOICE_SINGLE: { instruction: '<p><strong>After reading the text, answer a multiple-choice question by selecting one response.</strong></p>' },
+  MULTIPLE_CHOICE_MULTIPLE: { instruction: '<p><strong>After reading the text, answer a multiple-choice question by selecting more than one response.</strong></p>' },
+  REORDER_PARAGRAPHS: { instruction: '<p><strong>Several text boxes appear on the screen in a random order. Put the text boxes in the correct order.</strong></p>' },
+  FIB_READING_WRITING: { instruction: '<p><strong>You will see some text with several gaps. Choose the correct words from the drop-down menu to fill in the gaps.</strong></p>' },
+  FIB_READING: { instruction: '<p><strong>The text appears on a screen with several gaps in it. Drag words from the box below to fill the gaps.</strong></p>' },
+  FIB_LISTENING: { instruction: '<p><strong>A transcript of a recording appears on the screen, with several gaps. After listening to the recording, type the missing word in each gap.</strong></p>' },
+  HIGHLIGHT_CORRECT_SUMMARY: { instruction: '<p><strong>After listening to a recording, select the paragraph that best summarizes the recording.</strong></p>' },
+  SELECT_MISSING_WORD: { instruction: '<p><strong>After listening to a recording, select the missing word that completes the recording from a list of options.</strong></p>' },
+  HIGHLIGHT_INCORRECT_WORDS: { instruction: '<p><strong>The transcript of a recording appears on the screen. While listening to the recording, identify the words in the transcript that differ from what is said.</strong></p>' }
+}
+
 export function QuestionCard({ sectionIndex, questionIndex, remove, move, form, isFirst, isLast, sectionsCount }: any) {
   const questionPath = `sections.${sectionIndex}.questions.${questionIndex}`;
   const [isUploading, setIsUploading] = useState(false)
@@ -86,6 +107,8 @@ export function QuestionCard({ sectionIndex, questionIndex, remove, move, form, 
   const showOptions = ['MULTIPLE_CHOICE_SINGLE', 'MULTIPLE_CHOICE_MULTIPLE', 'HIGHLIGHT_CORRECT_SUMMARY', 'SELECT_MISSING_WORD'].includes(questionType)
   const showText = ['FIB_READING_WRITING', 'FIB_READING', 'FIB_LISTENING', 'MULTIPLE_CHOICE_SINGLE', 'MULTIPLE_CHOICE_MULTIPLE'].includes(questionType)
   const showReorderParagraphs = ['REORDER_PARAGRAPHS'].includes(questionType)
+  const showSpeakingTimes = ['READ_ALOUD', 'REPEAT_SENTENCE', 'DESCRIBE_IMAGE', 'RETELL_LECTURE', 'ANSWER_SHORT_QUESTION'].includes(questionType)
+  const showWritingTime = ['SUMMARIZE_WRITTEN_TEXT', 'WRITE_ESSAY', 'SUMMARIZE_SPOKEN_TEXT'].includes(questionType)
 
   if (isCollapsed) {
     return (
@@ -159,7 +182,25 @@ export function QuestionCard({ sectionIndex, questionIndex, remove, move, form, 
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormLabel>Loại câu hỏi (Question Type)</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select 
+                  value={field.value}
+                  onValueChange={(val) => {
+                    field.onChange(val)
+                    const defaults = QUESTION_DEFAULTS[val]
+                    if (defaults) {
+                      const currentInst = form.getValues(`${questionPath}.instruction`)
+                      const isDefaultInst = !currentInst || currentInst === '<p></p>' || Object.values(QUESTION_DEFAULTS).some(d => d.instruction === currentInst)
+                      if (isDefaultInst) {
+                        form.setValue(`${questionPath}.instruction`, defaults.instruction)
+                      }
+                      if (defaults.prepTime !== undefined) form.setValue(`${questionPath}.prepTime`, defaults.prepTime)
+                      if (defaults.recordTime !== undefined) form.setValue(`${questionPath}.recordTime`, defaults.recordTime)
+                      if (defaults.timeLimit !== undefined) form.setValue(`${questionPath}.timeLimit`, defaults.timeLimit)
+                      if (defaults.minWords !== undefined) form.setValue(`${questionPath}.minWords`, defaults.minWords)
+                      if (defaults.maxWords !== undefined) form.setValue(`${questionPath}.maxWords`, defaults.maxWords)
+                    }
+                  }} 
+                >
                   <FormControl>
                     <SelectTrigger className="w-full bg-white">
                       <span data-slot="select-value" className={cn("line-clamp-1 flex items-center", !field.value && "text-muted-foreground")}>
@@ -232,6 +273,52 @@ export function QuestionCard({ sectionIndex, questionIndex, remove, move, form, 
             </FormItem>
           )}
         />
+
+        {showSpeakingTimes && (
+          <div className="flex space-x-6">
+            <FormField
+              control={form.control}
+              name={`${questionPath}.prepTime`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>TG Chuẩn bị (giây)</FormLabel>
+                  <FormControl>
+                    <Input type="number" min={0} className="w-32 bg-white" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name={`${questionPath}.recordTime`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>TG Ghi âm (giây)</FormLabel>
+                  <FormControl>
+                    <Input type="number" min={0} className="w-32 bg-white" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+        )}
+
+        {showWritingTime && (
+          <div className="flex space-x-6">
+            <FormField
+              control={form.control}
+              name={`${questionPath}.timeLimit`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Giới hạn TG làm bài (giây)</FormLabel>
+                  <FormControl>
+                    <Input type="number" min={0} className="w-48 bg-white" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+        )}
 
         {showText && (
           ['FIB_READING_WRITING', 'FIB_READING', 'FIB_LISTENING'].includes(questionType) ? (
