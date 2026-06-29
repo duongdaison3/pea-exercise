@@ -5,6 +5,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { PlayCircle, Volume2, CheckCircle, Clock } from "lucide-react"
 
@@ -58,7 +59,10 @@ export function ListeningComponent({ question, value, onChange, onComplete }: { 
     switch (question.type) {
       case 'HIGHLIGHT_CORRECT_SUMMARY':
       case 'SELECT_MISSING_WORD':
+      case 'LISTENING_MULTIPLE_CHOICE_SINGLE':
         return <MultipleChoice content={content} value={answer} onChange={setAnswer} />
+      case 'LISTENING_MULTIPLE_CHOICE_MULTIPLE':
+        return <MultipleChoiceMultiple content={content} value={answer} onChange={setAnswer} />
       case 'HIGHLIGHT_INCORRECT_WORDS':
         return <HighlightIncorrectWords content={content} value={answer} onChange={setAnswer} />
       case 'FIB_LISTENING':
@@ -118,6 +122,34 @@ function MultipleChoice({ content, value, onChange }: any) {
           )
         })}
       </RadioGroup>
+    </div>
+  )
+}
+
+function MultipleChoiceMultiple({ content, value, onChange }: any) {
+  const selected = value || []
+  const toggle = (opt: string) => {
+    if (selected.includes(opt)) onChange(selected.filter((x: string) => x !== opt))
+    else onChange([...selected, opt])
+  }
+  return (
+    <div className="space-y-6">
+      {content.text && <div className="text-lg leading-relaxed text-slate-800 bg-slate-50 p-6 rounded-xl border mb-6">{content.text}</div>}
+      <div className="space-y-3">
+        {Array.isArray(content.options) && content.options.map((opt: any, idx: number) => {
+          const optValue = typeof opt === 'object' ? opt.value : opt;
+          return (
+            <div key={idx} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-slate-50 transition-colors">
+              <Checkbox 
+                id={`chk-${idx}`} 
+                checked={selected.includes(optValue)}
+                onCheckedChange={() => toggle(optValue)}
+              />
+              <Label htmlFor={`chk-${idx}`} className="flex-1 cursor-pointer text-base font-normal leading-relaxed">{optValue}</Label>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

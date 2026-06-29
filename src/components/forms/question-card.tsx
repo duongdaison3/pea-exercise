@@ -47,7 +47,10 @@ const QUESTION_TYPES: Record<string, string> = {
   HIGHLIGHT_CORRECT_SUMMARY: "Highlight Correct Summary",
   SELECT_MISSING_WORD: "Select Missing Word",
   HIGHLIGHT_INCORRECT_WORDS: "Highlight Incorrect Words",
-  FIB_LISTENING: "FIB (Listening)"
+  FIB_LISTENING: "FIB (Listening)",
+  READING_COMPREHENSION: "Reading Comprehension",
+  LISTENING_MULTIPLE_CHOICE_SINGLE: "Multiple Choice Single (Listening)",
+  LISTENING_MULTIPLE_CHOICE_MULTIPLE: "Multiple Choice Multiple (Listening)"
 }
 
 export const QUESTION_DEFAULTS: Record<string, any> = {
@@ -68,7 +71,10 @@ export const QUESTION_DEFAULTS: Record<string, any> = {
   FIB_LISTENING: { instruction: '<p><strong>A transcript of a recording appears on the screen, with several gaps. After listening to the recording, type the missing word in each gap.</strong></p>' },
   HIGHLIGHT_CORRECT_SUMMARY: { instruction: '<p><strong>After listening to a recording, select the paragraph that best summarizes the recording.</strong></p>' },
   SELECT_MISSING_WORD: { instruction: '<p><strong>After listening to a recording, select the missing word that completes the recording from a list of options.</strong></p>' },
-  HIGHLIGHT_INCORRECT_WORDS: { instruction: '<p><strong>The transcript of a recording appears on the screen. While listening to the recording, identify the words in the transcript that differ from what is said.</strong></p>' }
+  HIGHLIGHT_INCORRECT_WORDS: { instruction: '<p><strong>The transcript of a recording appears on the screen. While listening to the recording, identify the words in the transcript that differ from what is said.</strong></p>' },
+  READING_COMPREHENSION: { instruction: '<p><strong>Read the passage below and answer the questions.</strong></p>' },
+  LISTENING_MULTIPLE_CHOICE_SINGLE: { instruction: '<p><strong>After listening to a recording, answer a multiple-choice question by selecting one response.</strong></p>' },
+  LISTENING_MULTIPLE_CHOICE_MULTIPLE: { instruction: '<p><strong>After listening to a recording, answer a multiple-choice question on the content or tone of the recording by selecting more than one response.</strong></p>' }
 }
 
 export function QuestionCard({ sectionIndex, questionIndex, remove, move, form, isFirst, isLast, sectionsCount }: any) {
@@ -100,13 +106,14 @@ export function QuestionCard({ sectionIndex, questionIndex, remove, move, form, 
     name: `${questionPath}.options`
   })
 
-  const showAudio = ['REPEAT_SENTENCE', 'RETELL_LECTURE', 'ANSWER_SHORT_QUESTION', 'SUMMARIZE_SPOKEN_TEXT', 'WRITE_FROM_DICTATION', 'HIGHLIGHT_CORRECT_SUMMARY', 'SELECT_MISSING_WORD', 'HIGHLIGHT_INCORRECT_WORDS', 'FIB_LISTENING'].includes(questionType)
+  const showAudio = ['REPEAT_SENTENCE', 'RETELL_LECTURE', 'ANSWER_SHORT_QUESTION', 'SUMMARIZE_SPOKEN_TEXT', 'WRITE_FROM_DICTATION', 'HIGHLIGHT_CORRECT_SUMMARY', 'SELECT_MISSING_WORD', 'HIGHLIGHT_INCORRECT_WORDS', 'FIB_LISTENING', 'LISTENING_MULTIPLE_CHOICE_SINGLE', 'LISTENING_MULTIPLE_CHOICE_MULTIPLE'].includes(questionType)
   const showImage = ['DESCRIBE_IMAGE'].includes(questionType)
   const showTranscript = ['RETELL_LECTURE', 'HIGHLIGHT_INCORRECT_WORDS'].includes(questionType)
   const showWordLimits = ['SUMMARIZE_WRITTEN_TEXT', 'WRITE_ESSAY', 'SUMMARIZE_SPOKEN_TEXT'].includes(questionType)
-  const showOptions = ['MULTIPLE_CHOICE_SINGLE', 'MULTIPLE_CHOICE_MULTIPLE', 'HIGHLIGHT_CORRECT_SUMMARY', 'SELECT_MISSING_WORD'].includes(questionType)
+  const showOptions = ['MULTIPLE_CHOICE_SINGLE', 'MULTIPLE_CHOICE_MULTIPLE', 'HIGHLIGHT_CORRECT_SUMMARY', 'SELECT_MISSING_WORD', 'LISTENING_MULTIPLE_CHOICE_SINGLE', 'LISTENING_MULTIPLE_CHOICE_MULTIPLE'].includes(questionType)
   const showText = ['FIB_READING_WRITING', 'FIB_READING', 'FIB_LISTENING', 'MULTIPLE_CHOICE_SINGLE', 'MULTIPLE_CHOICE_MULTIPLE'].includes(questionType)
   const showReorderParagraphs = ['REORDER_PARAGRAPHS'].includes(questionType)
+  const showReadingComprehension = ['READING_COMPREHENSION'].includes(questionType)
   const showSpeakingTimes = ['READ_ALOUD', 'REPEAT_SENTENCE', 'DESCRIBE_IMAGE', 'RETELL_LECTURE', 'ANSWER_SHORT_QUESTION'].includes(questionType)
   const showWritingTime = ['SUMMARIZE_WRITTEN_TEXT', 'WRITE_ESSAY', 'SUMMARIZE_SPOKEN_TEXT'].includes(questionType)
 
@@ -226,6 +233,7 @@ export function QuestionCard({ sectionIndex, questionIndex, remove, move, form, 
                     </SelectGroup>
                     <SelectGroup>
                       <SelectLabel>Reading</SelectLabel>
+                      <SelectItem value="READING_COMPREHENSION">Reading Comprehension</SelectItem>
                       <SelectItem value="MULTIPLE_CHOICE_SINGLE">Multiple Choice (Single)</SelectItem>
                       <SelectItem value="MULTIPLE_CHOICE_MULTIPLE">Multiple Choice (Multiple)</SelectItem>
                       <SelectItem value="REORDER_PARAGRAPHS">Reorder Paragraphs</SelectItem>
@@ -234,6 +242,8 @@ export function QuestionCard({ sectionIndex, questionIndex, remove, move, form, 
                     </SelectGroup>
                     <SelectGroup>
                       <SelectLabel>Listening</SelectLabel>
+                      <SelectItem value="LISTENING_MULTIPLE_CHOICE_SINGLE">Multiple Choice Single (Listening)</SelectItem>
+                      <SelectItem value="LISTENING_MULTIPLE_CHOICE_MULTIPLE">Multiple Choice Multiple (Listening)</SelectItem>
                       <SelectItem value="HIGHLIGHT_CORRECT_SUMMARY">Highlight Correct Summary</SelectItem>
                       <SelectItem value="SELECT_MISSING_WORD">Select Missing Word</SelectItem>
                       <SelectItem value="HIGHLIGHT_INCORRECT_WORDS">Highlight Incorrect Words</SelectItem>
@@ -481,6 +491,10 @@ export function QuestionCard({ sectionIndex, questionIndex, remove, move, form, 
           <ReorderParagraphsBuilder questionPath={questionPath} form={form} />
         )}
 
+        {showReadingComprehension && (
+          <ReadingComprehensionBuilder questionPath={questionPath} form={form} />
+        )}
+
       </div>
       
       <div className="mt-6 flex justify-end pt-4 border-t border-slate-200">
@@ -701,6 +715,115 @@ function ReorderParagraphsBuilder({ questionPath, form }: { questionPath: string
         )}
       </div>
       <p className="text-xs text-indigo-600 mt-2">Lưu ý: Bạn cần nhập các đoạn văn theo thứ tự đúng. Hệ thống sẽ tự động xáo trộn ngẫu nhiên khi học viên làm bài.</p>
+    </div>
+  )
+}
+
+function ReadingComprehensionBuilder({ questionPath, form }: { questionPath: string, form: UseFormReturn<any> }) {
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: `${questionPath}.subQuestions`
+  })
+
+  return (
+    <div className="space-y-6 border border-emerald-200 p-5 bg-emerald-50/30 rounded-xl shadow-sm">
+      <FormField
+        control={form.control}
+        name={`${questionPath}.text`}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className="text-emerald-900 font-semibold text-lg">Đoạn văn chung</FormLabel>
+            <FormControl>
+              <RichTextEditor placeholder="Nhập nội dung đoạn văn bài đọc..." value={field.value || ''} onChange={field.onChange} />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+
+      <div className="space-y-4 pt-4 border-t border-emerald-200">
+        <div className="flex justify-between items-center">
+          <Label className="text-emerald-900 font-semibold text-lg">Danh sách Câu hỏi con</Label>
+          <Button type="button" size="sm" onClick={() => append({ questionText: '', options: [{ value: '', isCorrect: true }] })} className="bg-emerald-600 hover:bg-emerald-700">
+            <Plus className="w-4 h-4 mr-2" /> Thêm câu hỏi con
+          </Button>
+        </div>
+
+        {fields.map((field: any, qIdx: number) => (
+          <div key={field.id} className="p-4 bg-white border border-slate-200 rounded-xl space-y-4 relative shadow-sm">
+            <div className="absolute top-4 right-4">
+              <Button type="button" variant="ghost" size="icon" onClick={() => remove(qIdx)} className="text-slate-400 hover:text-red-500">
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+            
+            <h4 className="font-semibold text-slate-700">Câu hỏi {qIdx + 1}</h4>
+            
+            <FormField
+              control={form.control}
+              name={`${questionPath}.subQuestions.${qIdx}.questionText`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="Nhập đề bài cho câu hỏi con này..." className="font-medium" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <SubQuestionOptionsBuilder questionPath={`${questionPath}.subQuestions.${qIdx}`} form={form} />
+          </div>
+        ))}
+        {fields.length === 0 && (
+          <p className="text-sm text-slate-500 italic text-center py-4 bg-white rounded-lg border border-dashed">
+            Chưa có câu hỏi con nào. Bấm &quot;Thêm câu hỏi con&quot; để tạo câu trắc nghiệm cho bài đọc.
+          </p>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function SubQuestionOptionsBuilder({ questionPath, form }: { questionPath: string, form: UseFormReturn<any> }) {
+  const { fields: options, append: appendOption, remove: removeOption } = useFieldArray({
+    control: form.control,
+    name: `${questionPath}.options`
+  })
+
+  return (
+    <div className="space-y-3 bg-slate-50 p-4 rounded-lg border">
+      <Label className="text-slate-600 font-semibold text-xs uppercase tracking-wider">Lựa chọn Đáp án</Label>
+      {options.map((option: any, optIndex: number) => (
+        <div key={option.id} className="flex items-center space-x-3">
+          <FormField
+            control={form.control}
+            name={`${questionPath}.options.${optIndex}.isCorrect`}
+            render={({ field }) => (
+              <FormItem className="flex items-center space-x-2 space-y-0">
+                <FormControl>
+                  <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name={`${questionPath}.options.${optIndex}.value`}
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormControl>
+                  <Input placeholder={`Lựa chọn ${optIndex + 1}`} className="w-full h-8 text-sm bg-white" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <Button type="button" variant="ghost" size="icon" onClick={() => removeOption(optIndex)} className="h-8 w-8">
+            <X className="w-4 h-4 text-slate-400 hover:text-red-500" />
+          </Button>
+        </div>
+      ))}
+      <Button type="button" variant="outline" size="sm" onClick={() => appendOption({ value: '', isCorrect: false })} className="h-8 text-xs">
+        <Plus className="w-3 h-3 mr-1" /> Thêm đáp án
+      </Button>
     </div>
   )
 }

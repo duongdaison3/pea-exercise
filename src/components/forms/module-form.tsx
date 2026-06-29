@@ -37,6 +37,14 @@ import { cn } from "@/lib/utils"
 import { useState, useMemo } from "react"
 import { QuestionCard, QUESTION_DEFAULTS } from "./question-card"
 
+const subQuestionSchema = z.object({
+  questionText: z.string(),
+  options: z.array(z.object({ 
+    value: z.string(), 
+    isCorrect: z.boolean().optional() 
+  })).optional()
+})
+
 const questionSchema = z.object({
   id: z.string().optional(),
   type: z.string({ required_error: "Vui lòng chọn loại câu hỏi" }),
@@ -55,6 +63,7 @@ const questionSchema = z.object({
     value: z.string(), 
     isCorrect: z.boolean().optional() 
   })).optional(),
+  subQuestions: z.array(subQuestionSchema).optional(),
   paragraphs: z.array(z.object({ value: z.string() })).optional(),
   score: z.coerce.number().min(0).optional(),
 })

@@ -4,6 +4,7 @@ import { SpeakingComponent } from "./speaking-component"
 import { WritingComponent } from "./writing-component"
 import { ReadingComponent } from "./reading-component"
 import { ListeningComponent } from "./listening-component"
+import { ReadingComprehensionComponent } from "./reading-comprehension-component"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function QuestionRenderer({ question, value, onChange, onComplete }: { question: any, value?: any, onChange?: (val: any) => void, onComplete: (data: Blob | string) => void }) {
@@ -33,7 +34,12 @@ export function QuestionRenderer({ question, value, onChange, onComplete }: { qu
     case 'SELECT_MISSING_WORD':
     case 'HIGHLIGHT_INCORRECT_WORDS':
     case 'FIB_LISTENING':
+    case 'LISTENING_MULTIPLE_CHOICE_SINGLE':
+    case 'LISTENING_MULTIPLE_CHOICE_MULTIPLE':
       return <ListeningComponent question={question} value={value} onChange={onChange} onComplete={onComplete as (s: string) => void} />
+    
+    case 'READING_COMPREHENSION':
+      return <ReadingComprehensionComponent question={question} value={value} onChange={onChange} />
       
     default:
       return (

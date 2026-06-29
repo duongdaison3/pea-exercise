@@ -103,7 +103,7 @@ export async function POST(req: Request) {
       }
 
       // 1. NHÓM ĐỌC / NGHE (TRẮC NGHIỆM, KÉO THẢ, ĐIỀN TỪ) -> KHÔNG CẦN AI, CODE LOGIC
-      if (['MULTIPLE_CHOICE_SINGLE', 'MULTIPLE_CHOICE_MULTIPLE', 'SELECT_MISSING_WORD', 'HIGHLIGHT_CORRECT_SUMMARY'].includes(question.type)) {
+      if (['MULTIPLE_CHOICE_SINGLE', 'MULTIPLE_CHOICE_MULTIPLE', 'SELECT_MISSING_WORD', 'HIGHLIGHT_CORRECT_SUMMARY', 'LISTENING_MULTIPLE_CHOICE_SINGLE', 'LISTENING_MULTIPLE_CHOICE_MULTIPLE'].includes(question.type)) {
         const studentChoices = answer.textResponse ? JSON.parse(answer.textResponse) : ""
         let correctCount = 0
         let totalCorrect = 0
@@ -114,7 +114,7 @@ export async function POST(req: Request) {
             correctCount++
           } else if (!opt.isCorrect && Array.isArray(studentChoices) && studentChoices.includes(opt.value)) {
              // Trừ điểm nếu chọn sai (luật PTE cho Multiple choice multiple answers)
-             if (['MULTIPLE_CHOICE_MULTIPLE', 'HIGHLIGHT_INCORRECT_WORDS'].includes(question.type)) {
+             if (['MULTIPLE_CHOICE_MULTIPLE', 'LISTENING_MULTIPLE_CHOICE_MULTIPLE', 'HIGHLIGHT_INCORRECT_WORDS'].includes(question.type)) {
                 correctCount--
              }
           }
@@ -123,6 +123,22 @@ export async function POST(req: Request) {
         if (correctCount < 0) correctCount = 0
         finalScore = totalCorrect > 0 ? (correctCount / totalCorrect) * maxScore : 0
         aiFeedback = `Bạn trả lời đúng ${correctCount}/${totalCorrect} ý.`
+      }
+      else if (question.type === 'READING_COMPREHENSION') {
+        const studentAnswers = answer.textResponse ? JSON.parse(answer.textResponse) : {}
+        const subQuestions = content.subQuestions || []
+        
+        let correctCount = 0
+        subQuestions.forEach((subQ: any, index: number) => {
+           const studentAns = studentAnswers[index.toString()]
+           const correctOption = subQ.options?.find((opt: any) => opt.isCorrect)
+           if (correctOption && studentAns === correctOption.value) {
+             correctCount++
+           }
+        })
+        
+        finalScore = subQuestions.length > 0 ? (correctCount / subQuestions.length) * maxScore : 0
+        aiFeedback = `Bạn trả lời đúng ${correctCount}/${subQuestions.length} câu hỏi đọc hiểu.`
       }
       else if (question.type === 'REORDER_PARAGRAPHS') {
         const studentOrder = answer.textResponse ? JSON.parse(answer.textResponse) : []
